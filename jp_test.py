@@ -148,6 +148,7 @@ class JPServerDetection(object):
             'mem_num': len(mem_list)
         }
 
+
     def get_raid_info(self):
         """获取raid信息"""
         raid_info = self.os_popen('echo {} | sudo -S {} | grep "raid_info:"'.format(
