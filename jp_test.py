@@ -25,6 +25,7 @@ class Config(object):
         with open('./config.json', 'r') as f:
             return json.load(f)
 
+
 class JPServerDetection(object):
     def __init__(self):
         config = Config()
@@ -65,7 +66,7 @@ class JPServerDetection(object):
         self.hba_info2_shell = '{}{}'.format(base_path, config_data.get('hba_info2_shell', 'hba_info2.sh'))
         self.hba_info1_2_shell = '{}{}'.format(base_path, config_data.get('hba_info1_2_shell', 'hba_info1_2.sh'))
         self.hba_info2_2_shell = '{}{}'.format(base_path, config_data.get('hba_info2_2_shell', 'hba_info2_2.sh'))
-        self.fan_mode_shell='{}{}'.format(base_path,config_data.get('fan_mode_shell','fan_mode.sh'))
+        self.fan_mode_shell = '{}{}'.format(base_path, config_data.get('fan_mode_shell', 'fan_mode.sh'))
 
     @staticmethod
     def os_popen(command):
@@ -82,11 +83,11 @@ class JPServerDetection(object):
 
     def get_sys_info(self):
         """获取操作系统信息"""
-        #操作系统名称
+        # 操作系统名称
         # sys_info = self.os_popen('{}'.format(self.system_shell))
         sys_info = self.os_popen('echo {} | sudo -S {}'.format(self.server_password, self.system_shell))
         sys_data = sys_info.read().strip()
-        #print("1",sys_data)
+        # print("1",sys_data)
         return [i.strip() for i in sys_data.split('*')]
 
     def get_cpu_info(self):
@@ -147,7 +148,6 @@ class JPServerDetection(object):
             'mem_sum': '{} {}'.format(round(float(mem_sum), 1), unit),
             'mem_num': len(mem_list)
         }
-
 
     def get_raid_info(self):
         """获取raid信息"""
@@ -223,10 +223,9 @@ class JPServerDetection(object):
 
         fan_info = self.os_popen('echo {} | sudo -S {}'.format(self.server_password, self.fan_shell))
         fan_data = fan_info.read().strip()
-        
+
         fan_mode = self.os_popen('echo {} | sudo -S {}'.format(self.server_password, self.fan_mode_shell))
         fan_mode_info = fan_mode.read().strip()
-        
 
         if not fan_data:
             print('---please input fan info---')
@@ -249,7 +248,7 @@ class JPServerDetection(object):
                     print('please input 0 or 1，0 is ok, 1 is fail')
                     continue
                 break
-            return {'fan_info':'风扇总数量：{}，状态：{}\n'.format(fan_amount, {'0': '合格', '1': '不合格'}.get(fan_status)) or '无'}
+            return {'fan_info': '风扇总数量：{}，状态：{}\n'.format(fan_amount, {'0': '合格', '1': '不合格'}.get(fan_status)) or '无'}
 
         fan_list = fan_data.split('\n')
         fan_str = len(fan_list)
@@ -257,7 +256,7 @@ class JPServerDetection(object):
             fan_list = [j.strip() for j in i.replace('\t', ' ').split('  ') if j.strip()]
             fan_str1 += '风扇：{}，转速：{}，状态：{}\n'.format(*fan_list)
 
-        return {'fan_info': fan_str1.strip() or "无", 'fandata': fan_str,'fan_mode':fan_mode_info}
+        return {'fan_info': fan_str1.strip() or "无", 'fandata': fan_str, 'fan_mode': fan_mode_info}
 
     def get_power_info(self):
         power_info = self.os_popen('echo {} | sudo -S {}'.format(self.server_password, self.power_shell))
@@ -409,7 +408,7 @@ class JPServerDetection(object):
         data_str = ''
         for i in zip(model_list, pci_e_list, vbios_list, image_list):
             data_str += '型号：{}，PCI-E位置：{}，VBIOS版本：{}，Image版本：{}\n'.format(*i)
-        data1=len(data_str.split('\n'))-1
+        data1 = len(data_str.split('\n')) - 1
         return {'nvidia': data_str.strip() or '无', 'data': data1}
 
     def get_nvidia_info2(self):
@@ -579,18 +578,18 @@ class JPServerDetection(object):
             sheet['C4'].value = '无'
             sheet['C5'].value = '无'
         else:
-            #for i, value in enumerate(sys_info):
-                #if i == 1:
-                    #sheet['C4'].value = '系统版本：' + value or '无'
-                #kernel = sys_info[0] or '无'
-                #data_time = sys_info[2] or '无'
-                #sheet['C5'].value = '内核：{}{}系统时间日期：{}'.format(kernel, ' ' * 53, data_time) or '无'
-            kernel=sys_info[0] or '无'
-            boot=sys_info[1] or '无'
-            version=sys_info[2] or '无'
-            time=sys_info[3] or '无'
-            sheet['C4'].value='系统版本:{}{}系统引导方式:{}'.format(version,' ' * 10,boot) or '无'
-            sheet['C5'].value='内核:{}{}系统时间日期:{}'.format(kernel,' ' * 10,time) or '无'
+            # for i, value in enumerate(sys_info):
+            # if i == 1:
+            # sheet['C4'].value = '系统版本：' + value or '无'
+            # kernel = sys_info[0] or '无'
+            # data_time = sys_info[2] or '无'
+            # sheet['C5'].value = '内核：{}{}系统时间日期：{}'.format(kernel, ' ' * 53, data_time) or '无'
+            kernel = sys_info[0] or '无'
+            boot = sys_info[1] or '无'
+            version = sys_info[2] or '无'
+            time = sys_info[3] or '无'
+            sheet['C4'].value = '系统版本:{}{}系统引导方式:{}'.format(version, ' ' * 10, boot) or '无'
+            sheet['C5'].value = '内核:{}{}系统时间日期:{}'.format(kernel, ' ' * 55, time) or '无'
         # 主板信息
         motherboard_info = self.get_motherboard_info()
         # 主板品牌
@@ -721,7 +720,7 @@ class JPServerDetection(object):
         fan_info = fan.get('fan_info')
         fan_data = fan.get('fandata')
         fan_mode = fan.get('fan_mode')
-        sheet['C34'].value = '{}\n\n风扇总数量:{}            风扇模式:{}'.format(fan_info, fan_data,fan_mode)
+        sheet['C34'].value = '{}\n\n风扇总数量:{}            风扇模式:{}'.format(fan_info, fan_data, fan_mode)
         if '无' in sheet['C34'].value:
             sheet['C34'].value = '{}'.format(fan_info)
         # PCI-E插槽信息
@@ -764,7 +763,6 @@ class JPServerDetection(object):
         # remote_path=u'./home/jp/data/质检留档/{}'.format(dir_name)
         # 远程服务器
         self.scp_report(local_path=file_path, target_path=self.remote_path)
-
 
 
 if __name__ == '__main__':
