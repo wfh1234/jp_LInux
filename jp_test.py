@@ -353,6 +353,7 @@ class JPServerDetection(object):
             'serial_number': board_list[2].split(':')[-1].strip()
         }
 
+
     def get_network_info(self):
         network_info = self.os_popen('echo {} | sudo -S {}'.format(self.server_password, self.network1_shell))
         network_data = network_info.read().strip().split('\n')
